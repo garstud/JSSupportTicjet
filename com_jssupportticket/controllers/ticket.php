@@ -51,11 +51,28 @@ class JSSupportTicketControllerticket extends JSSupportTicketController{
 
     function actionticket() {
       	JSession::checkToken('post') or jexit(JText::_('JINVALID_TOKEN'));
+	    
+	/**
+	* importing plugins from group 'jssupportticket'
+	*/
+	JPluginHelper::importPlugin('jssupportticket');
+        $dispatcher = JDispatcher::getInstance();
+	    
         $ticket = $this->getJSModel('ticket');
         $Itemid = JRequest::getVar('Itemid');
         $data = JRequest::get('POST');
         $action = $data['callfrom'];
         $user = JSSupportTicketCurrentUser::getInstance();
+	    
+        /**
+	* calling the standard 'onContentBeforeSave' event with standardized parameters
+	* - context = "com_jssupportticket.ticket.postreply", ... 
+	* - ticket = origional data of the content
+	* - isNew = specify if we edit or create a new item
+	* - data = the posted data from the web form
+	*/
+        $isNew = ($data['id']==''?true:false);
+        $dispatcher->trigger( 'onContentBeforeSave', array("com_jssupportticket.ticket.".$action, $ticket, $isNew, &$data));    
         
         switch ($action) {
         	case 'postreply':
@@ -197,6 +214,15 @@ class JSSupportTicketControllerticket extends JSSupportTicketController{
                 }
                 break;
         }
+
+	/**
+	* calling the standard 'onContentAfterSave' event with standardized parameters
+	* - context = "com_jssupportticket.ticket.postreply", ... 
+	* - ticket = origional data of the content
+	* - isNew = specify if we edit or create a new item
+	* - data = the posted data from the web form
+	*/
+        $dispatcher->trigger( 'onContentAfterSave', array("com_jssupportticket.ticket.".$action, $ticket, $isNew, &$data));   	    
     }
 
     function savemessage(){
