@@ -380,18 +380,43 @@ class JSSupportTicketControllerticket extends JSSupportTicketController{
         JFactory::getApplication()->close();
     }
 
-	function saveeditedtime() {
-    		JSession::checkToken('post') or jexit(JText::_('JINVALID_TOKEN'));
-        JPluginHelper::importPlugin('jssupportticket');
-        $dispatcher = JDispatcher::getInstance();        
+    function saveeditedtime() {
+    	JSession::checkToken('post') or jexit(JText::_('JINVALID_TOKEN'));
+
+	/**
+	* importing plugins from group 'jssupportticket'
+	*/
+	JPluginHelper::importPlugin('jssupportticket');
+        $dispatcher = JDispatcher::getInstance();	    
 
         $Itemid =  JRequest::getVar('Itemid');
-		    $data = JRequest::get('post');
+	$data = JRequest::get('post');
+	    
+        /**
+	* calling the standard 'onContentBeforeSave' event with standardized parameters
+	* - context = "com_jssupportticket.ticket.editetime"
+	* - ticket = origional data of the content
+	* - isNew = false, specify that we just edit a time value in an existing reply
+	* - data = the posted data from the web form
+	*/
+        $ticket = $this->getJSModel('ticket');
+	$isNew = false;
+        $dispatcher->trigger( 'onContentBeforeSave', array("com_jssupportticket.ticket.editetime", $ticket, $isNew, &$data));
+	    
 
         $result = $this->getJSModel('ticket')->editTime($data);
         $link = 'index.php?option=com_jssupportticket&c=ticket&layout=ticketdetail&id='.$data['reply-tikcetid'].'&Itemid='.$Itemid;
         $msg = JSSupportTicketMessage::getMessage($result,'TICKET');
         $this->setRedirect(JRoute::_($link), $msg);
+	    
+        /**
+	* calling the standard 'onContentAfterSave' event with standardized parameters
+	* - context = "com_jssupportticket.ticket.editetime"
+	* - ticket = origional data of the content
+	* - isNew = false, specify that we just edit a time value in an existing reply
+	* - data = the posted data from the web form
+	*/
+	$dispatcher->trigger( 'onContentAfterSave', array("com_jssupportticket.ticket.editetime", $ticket, $isNew, &$data));         	    
     }
 
 	function saveeditedtimenote() {
