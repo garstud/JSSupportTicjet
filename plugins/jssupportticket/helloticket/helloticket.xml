@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.7" type="plugin" group="jssupportticket" method="upgrade">
+	<name>plg_jssupportticket_helloticket</name>
+	<author>NosyWeb</author>
+	<creationDate>November 2018</creationDate>
+	<copyright>Copyright (C) 2018 NosyWeb</copyright>
+	<license>GNU/GPL v2</license>
+	<authorEmail>...</authorEmail>
+	<authorUrl>www.nosyweb-digital.com</authorUrl>
+	<version>1.0.0</version>
+	<description>Plugin to display message when making action in a Ticket</description>
+
+	<files>
+		<filename plugin="helloticket">helloticket.php</filename>
+		<filename>index.html</filename>
+	</files>
+
+  <config/>
+</extension>
