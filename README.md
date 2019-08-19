@@ -3,7 +3,7 @@ Adding plugin event to JSSupportTicket component
 
 ## Controllers
 
-This directory only contains original controllers on which i had mofications to trigger Joomla plugins events
+This directory only contains original controllers on which i had modifications to trigger Joomla plugins events
 
 See **'history'** of each controllers to see the added code:
 https://github.com/garstud/JSSupportTicket/commits/master/com_jssupportticket/controllers/ticket.php
